@@ -1,0 +1,58 @@
+▶ Autenticación y sesiones
+  ✔ registro crea la cuenta (201) y abre sesión (149.207153ms)
+  ✔ correo repetido -> 409 EMAIL_EN_USO (5.260672ms)
+  ✔ datos inválidos -> 400 con detalle por campo (6.042305ms)
+  ✔ credenciales incorrectas -> 401 (68.704713ms)
+  ✔ logout destruye la sesión (65.396945ms)
+  ✔ cookie de sesión es HttpOnly y SameSite (111.097283ms)
+✔ Autenticación y sesiones (991.637057ms)
+▶ Servicios (CRUD admin)
+  ✔ listado público (6.103897ms)
+  ✔ estudiante no puede crear -> 403 (51.521208ms)
+  ✔ admin crea (201 + Location), nombre duplicado -> 409 (66.465297ms)
+  ✔ PUT con versión desactualizada -> 409 VERSION_CONFLICTO (70.477134ms)
+  ✔ id inválido -> 400; inexistente -> 404 (5.406698ms)
+✔ Servicios (CRUD admin) (201.305593ms)
+▶ Reservas
+  ✔ sin sesión -> 401 (3.969192ms)
+  ✔ crear reserva -> 201 con contrato completo (61.889687ms)
+  ✔ validaciones de negocio -> 400 (pasado, domingo, fuera de horario, duración) (64.355467ms)
+  ✔ mismo estudiante en horario cruzado -> 409 RESERVA_DUPLICADA (55.855748ms)
+  ✔ cupo lleno -> 409 CUPO_LLENO (109.823075ms)
+  ✔ servicio con reservas no se elimina -> 409 (54.312367ms)
+  ✔ aislamiento: un estudiante no ve reservas ajenas (111.693873ms)
+  ✔ filtros y paginación (62.144977ms)
+  ✔ filtro con intento de inyección SQL -> 400 (58.488293ms)
+  ✔ PATCH: reprogramar, versión obsoleta, permisos y transiciones (133.200885ms)
+  ✔ DELETE de reserva pendiente -> 204 y luego 404 (50.608493ms)
+✔ Reservas (767.580662ms)
+▶ Archivo: comprobante de pago
+  ✔ subir PDF válido -> 200 y descarga con su tipo (28.126509ms)
+  ✔ archivo disfrazado (.pdf que no es PDF) -> 415 (8.765897ms)
+  ✔ archivo mayor a 2 MB -> 413 (23.126174ms)
+  ✔ sin archivo -> 400 (5.567078ms)
+✔ Archivo: comprobante de pago (111.738386ms)
+▶ Errores generales
+  ✔ JSON mal formado -> 400 INVALID_JSON (42.040733ms)
+  ✔ ruta inexistente -> 404 ROUTE_NOT_FOUND (4.140956ms)
+  ✔ campos no permitidos se rechazan (sin asignación masiva) (111.756396ms)
+✔ Errores generales (158.339166ms)
+✔ validar: acumula errores, rechaza campos desconocidos y no muta la entrada (2.210548ms)
+✔ validar: modo parcial permite omitir campos (PATCH) (1.970214ms)
+✔ fechaISO rechaza fechas inexistentes (1.273849ms)
+✔ seSolapan: intervalos contiguos no se cruzan (0.257688ms)
+✔ erroresDeHorario: pasado, domingo y fuera de horario (2.115146ms)
+✔ transiciones de estado (0.279694ms)
+✔ aplicarCambios devuelve un objeto nuevo sin mutar el original (0.253254ms)
+✔ detectarTipo usa los bytes reales, no la extensión (0.47988ms)
+✔ normalizarNombre ignora tildes, mayúsculas y espacios (1.149187ms)
+✔ socket sin sesión es rechazado (223.272738ms)
+✔ admin y dueña reciben reserva:creada; otro usuario no (830.260205ms)
+ℹ tests 40
+ℹ suites 5
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5734.603476

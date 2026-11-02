@@ -1,0 +1,171 @@
+newman
+
+API Reservas · Centro de Clases Paute
+
+❏ 1. Autenticación
+↳ Salud
+  GET http://localhost:3000/api/health [200 OK, 356B, 35ms]
+  ✓  HTTP 200
+
+↳ Login inválido (401)
+  POST http://localhost:3000/api/auth/login [401 Unauthorized, 394B, 67ms]
+  ✓  HTTP 401
+  ✓  formato de error uniforme
+
+↳ Registro con datos inválidos (400)
+  POST http://localhost:3000/api/auth/register [400 Bad Request, 590B, 5ms]
+  ✓  HTTP 400
+  ✓  formato de error uniforme
+
+↳ Registro correo repetido (409)
+  POST http://localhost:3000/api/auth/register [409 Conflict, 386B, 3ms]
+  ✓  HTTP 409
+  ✓  formato de error uniforme
+
+↳ Login estudiante (200)
+  POST http://localhost:3000/api/auth/login [200 OK, 557B, 49ms]
+  ✓  HTTP 200
+  ✓  rol estudiante
+
+↳ Usuario actual
+  GET http://localhost:3000/api/auth/me [200 OK, 557B, 5ms]
+  ✓  HTTP 200
+
+❏ 2. Reservas (estudiante)
+↳ Listar servicios
+  GET http://localhost:3000/api/servicios [200 OK, 1.18kB, 7ms]
+  ✓  HTTP 200
+  ✓  hay servicios
+
+↳ Crear reserva (201)
+  POST http://localhost:3000/api/reservas [201 Created, 857B, 23ms]
+  ✓  HTTP 201
+  ✓  Location
+
+↳ Reserva cruzada mismo estudiante (409)
+  POST http://localhost:3000/api/reservas [409 Conflict, 592B, 8ms]
+  ✓  HTTP 409
+  ✓  formato de error uniforme
+  ✓  código
+
+↳ Validación de negocio (400)
+  POST http://localhost:3000/api/reservas [400 Bad Request, 783B, 5ms]
+  ✓  HTTP 400
+  ✓  formato de error uniforme
+
+↳ Campo no permitido (400)
+  POST http://localhost:3000/api/reservas [400 Bad Request, 626B, 5ms]
+  ✓  HTTP 400
+  ✓  formato de error uniforme
+
+↳ Listar con filtros
+  GET http://localhost:3000/api/reservas?estado=pendiente&page=1&limit=10 [200 OK, 878B, 6ms]
+  ✓  HTTP 200
+  ✓  meta
+
+↳ Obtener reserva
+  GET http://localhost:3000/api/reservas/1 [200 OK, 825B, 5ms]
+  ✓  HTTP 200
+
+↳ Reprogramar (PATCH)
+  PATCH http://localhost:3000/api/reservas/1 [200 OK, 825B, 6ms]
+  ✓  HTTP 200
+  ✓  versión 2
+
+↳ Versión obsoleta (409)
+  PATCH http://localhost:3000/api/reservas/1 [409 Conflict, 629B, 4ms]
+  ✓  HTTP 409
+  ✓  formato de error uniforme
+
+↳ Estudiante intenta confirmar (403)
+  PATCH http://localhost:3000/api/reservas/1 [403 Forbidden, 555B, 5ms]
+  ✓  HTTP 403
+  ✓  formato de error uniforme
+
+↳ Subir comprobante PDF
+  PUT http://localhost:3000/api/reservas/1/comprobante (node:821) [DEP0044] DeprecationWarning: The `util.isArray` API is deprecated. Please use `Array.isArray()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[200 OK, 824B, 16ms]
+  ✓  HTTP 200
+  ✓  tiene comprobante
+
+↳ Descargar comprobante
+  GET http://localhost:3000/api/reservas/1/comprobante [200 OK, 1.93kB, 7ms]
+  ✓  HTTP 200
+  ✓  es PDF
+
+↳ Id inválido (400)
+  GET http://localhost:3000/api/reservas/abc [400 Bad Request, 631B, 4ms]
+  ✓  HTTP 400
+  ✓  formato de error uniforme
+
+↳ Cerrar sesión (204)
+  POST http://localhost:3000/api/auth/logout [204 No Content, 262B, 4ms]
+  ✓  HTTP 204
+
+↳ Sin sesión (401)
+  GET http://localhost:3000/api/reservas [401 Unauthorized, 378B, 2ms]
+  ✓  HTTP 401
+  ✓  formato de error uniforme
+
+❏ 3. Administración
+↳ Login admin
+  POST http://localhost:3000/api/auth/login [200 OK, 574B, 45ms]
+  ✓  HTTP 200
+
+↳ Confirmar reserva
+  PATCH http://localhost:3000/api/reservas/1 [200 OK, 823B, 7ms]
+  ✓  HTTP 200
+  ✓  confirmada
+
+↳ Transición inválida (409)
+  PATCH http://localhost:3000/api/reservas/1 [409 Conflict, 579B, 4ms]
+  ✓  HTTP 409
+  ✓  formato de error uniforme
+
+↳ Crear servicio (201)
+  POST http://localhost:3000/api/servicios [201 Created, 647B, 11ms]
+  ✓  HTTP 201
+
+↳ Nombre duplicado (409)
+  POST http://localhost:3000/api/servicios [409 Conflict, 560B, 4ms]
+  ✓  HTTP 409
+  ✓  formato de error uniforme
+
+↳ Actualizar servicio (PUT)
+  PUT http://localhost:3000/api/servicios/5 [200 OK, 627B, 4ms]
+  ✓  HTTP 200
+
+↳ Eliminar servicio con reservas (409)
+  DELETE http://localhost:3000/api/servicios/2 [409 Conflict, 606B, 4ms]
+  ✓  HTTP 409
+  ✓  formato de error uniforme
+
+↳ Eliminar servicio (204)
+  DELETE http://localhost:3000/api/servicios/5 [204 No Content, 366B, 5ms]
+  ✓  HTTP 204
+
+↳ Ruta inexistente (404)
+  GET http://localhost:3000/api/no-existe [404 Not Found, 560B, 4ms]
+  ✓  HTTP 404
+  ✓  formato de error uniforme
+
+┌─────────────────────────┬──────────────────┬──────────────────┐
+│                         │         executed │           failed │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              iterations │                1 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│                requests │               30 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│            test-scripts │               30 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│      prerequest-scripts │               30 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              assertions │               53 │                0 │
+├─────────────────────────┴──────────────────┴──────────────────┤
+│ total run duration: 896ms                                     │
+├───────────────────────────────────────────────────────────────┤
+│ total data received: 6.8kB (approx)                           │
+├───────────────────────────────────────────────────────────────┤
+│ average response time: 11ms [min: 2ms, max: 67ms, s.d.: 15ms] │
+└───────────────────────────────────────────────────────────────┘

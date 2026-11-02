@@ -1,0 +1,104 @@
+### Colección para la extensión REST Client de VS Code (también sirve de documentación).
+### Ejecute en orden; la cookie de sesión se reutiliza automáticamente.
+@base = http://localhost:3000/api
+
+### Salud
+GET {{base}}/health
+
+### Registro (201)
+POST {{base}}/auth/register
+Content-Type: application/json
+
+{ "nombre": "Luis Andrade", "email": "luis@correo.com", "password": "Clave1234" }
+
+### Login como estudiante (200)
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{ "email": "maria@correo.com", "password": "Maria123!" }
+
+### Usuario actual
+GET {{base}}/auth/me
+
+### Catálogo de servicios (público)
+GET {{base}}/servicios
+
+### Crear reserva (201)  -> cambie la fecha por un día hábil futuro
+POST {{base}}/reservas
+Content-Type: application/json
+
+{ "servicioId": 2, "estudianteNombre": "Sofía Pérez", "fecha": "2026-11-03", "horaInicio": "15:00", "duracionMin": 60, "notas": "Trae el cuaderno" }
+
+### Reserva cruzada del mismo estudiante (409 RESERVA_DUPLICADA)
+POST {{base}}/reservas
+Content-Type: application/json
+
+{ "servicioId": 2, "estudianteNombre": "Sofía Pérez", "fecha": "2026-11-03", "horaInicio": "15:30", "duracionMin": 60 }
+
+### Validación (400 VALIDATION_ERROR)
+POST {{base}}/reservas
+Content-Type: application/json
+
+{ "servicioId": 2, "estudianteNombre": "S", "fecha": "2026-11-08", "horaInicio": "25:00", "duracionMin": 45 }
+
+### Listar con filtros y paginación
+GET {{base}}/reservas?fecha=2026-11-03&estado=pendiente&page=1&limit=10
+
+### Reprogramar (PATCH con control de versión)
+PATCH {{base}}/reservas/1
+Content-Type: application/json
+
+{ "version": 1, "horaInicio": "16:00" }
+
+### Versión obsoleta (409 VERSION_CONFLICTO)
+PATCH {{base}}/reservas/1
+Content-Type: application/json
+
+{ "version": 1, "notas": "cambio tardío" }
+
+### Subir comprobante (PDF/PNG/JPG, máx. 2 MB)
+PUT {{base}}/reservas/1/comprobante
+Content-Type: multipart/form-data; boundary=LIMITE
+
+--LIMITE
+Content-Disposition: form-data; name="comprobante"; filename="pago.pdf"
+Content-Type: application/pdf
+
+< ./ejemplo-comprobante.pdf
+--LIMITE--
+
+### Descargar comprobante
+GET {{base}}/reservas/1/comprobante
+
+### Login como admin
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{ "email": "admin@tejiendoredes.ec", "password": "Admin123!" }
+
+### Confirmar reserva (solo admin)
+PATCH {{base}}/reservas/1
+Content-Type: application/json
+
+{ "version": 2, "estado": "confirmada" }
+
+### Crear servicio (admin, 201)
+POST {{base}}/servicios
+Content-Type: application/json
+
+{ "nombre": "Inglés básico", "descripcion": "Conversación para niños", "precioCentavos": 700, "cupo": 3 }
+
+### Actualizar servicio (PUT completo + version)
+PUT {{base}}/servicios/5
+Content-Type: application/json
+
+{ "nombre": "Inglés básico", "descripcion": "Conversación y gramática", "precioCentavos": 750, "cupo": 4, "activo": true, "version": 1 }
+
+### Eliminar servicio con reservas (409 SERVICIO_CON_RESERVAS)
+DELETE {{base}}/servicios/2
+
+### Eliminar servicio sin reservas (204)
+DELETE {{base}}/servicios/5
+
+### Cerrar sesión (204)
+POST {{base}}/auth/logout
